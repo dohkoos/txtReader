@@ -20,28 +20,29 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class MainActivity extends Activity {
+    private MainApp app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        final List<Map<String, String>> toc = getTableOfContents();
+        app = (MainApp)getApplication();
+        app.setToc(getTableOfContents());
+
         ListView lv = (ListView)findViewById(R.id.toc);
         SimpleAdapter adapter = new SimpleAdapter(
                 this,
-                toc,
+                app.getToc(),
                 R.layout.list_item,
-                new String[] {"title"},
+                new String[] {MainApp.TITLE},
                 new int[] {R.id.title});
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, TxtViewer.class);
-                intent.putExtra("title", toc.get(position).get("title"));
-                intent.putExtra("file", toc.get(position).get("file"));
-                startActivity(intent);
+                app.setPosition(position);
+                startActivity(new Intent(MainActivity.this, TxtViewer.class));
             }
         });
     }
@@ -56,8 +57,8 @@ public class MainActivity extends Activity {
             while ((line = br.readLine()) != null) {
                 String[] items = line.split(",");
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("title", items[0]);
-                map.put("file", items[1]);
+                map.put(MainApp.TITLE, items[0]);
+                map.put(MainApp.FILE, items[1]);
                 list.add(map);
             }
             br.close();

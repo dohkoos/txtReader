@@ -2,5 +2,11 @@
 <resources>
     <string name="app_name">txtReader</string>
 
+    <string name="toc">目录</string>
+    <string name="prev">上一篇</string>
+    <string name="next">下一篇</string>
+    <string name="zoomin">放大</string>
+    <string name="zoomout">缩小</string>
+
     <string name="action_settings">设置</string>
 </resources>

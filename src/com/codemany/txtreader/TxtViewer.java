@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,8 +14,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class TxtViewer extends Activity {
+    private static final String TAG = "TxtViewer";
+
+    private static final int MIN_ZOOM = -3;
+    private static final int MAX_ZOOM = 6;
+    private int zoom = 0;
+
     private MainApp app;
-    private TextView text;
+    private TextView textView;
+
+    private ImageButton btnToc;
+    private ImageButton btnPrev;
+    private ImageButton btnNext;
+    private ImageButton btnZoomOut;
+    private ImageButton btnZoomIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,60 +36,66 @@ public class TxtViewer extends Activity {
 
         app = (MainApp)getApplication();
 
-        ImageButton btnToc = (ImageButton)findViewById(R.id.btn_toc);
+        btnToc = (ImageButton)findViewById(R.id.btn_toc);
         btnToc.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoToc();
             }
         });
-        ImageButton btnPrev = (ImageButton)findViewById(R.id.btn_prev);
+        btnPrev = (ImageButton)findViewById(R.id.btn_prev);
         btnPrev.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoPrev();
             }
         });
-        ImageButton btnNext = (ImageButton)findViewById(R.id.btn_next);
+        btnNext = (ImageButton)findViewById(R.id.btn_next);
         btnNext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoNext();
             }
         });
-        ImageButton btnZoomIn = (ImageButton)findViewById(R.id.btn_zoomin);
+        btnZoomIn = (ImageButton)findViewById(R.id.btn_zoomin);
         btnZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 zoomIn();
             }
         });
-        ImageButton btnZoomOut = (ImageButton)findViewById(R.id.btn_zoomout);
+        btnZoomOut = (ImageButton)findViewById(R.id.btn_zoomout);
         btnZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 zoomOut();
             }
         });
+        textView = (TextView)findViewById(R.id.text);
 
         updateTxtViewer();
     }
 
     private void updateTxtViewer() {
         setTitle(app.getTitle());
-        text = (TextView)findViewById(R.id.text);
-        text.setText(readText(app.getFile()));
+        textView.setText(readText(app.getFile()));
 
-        // update state of previous and next buttons
-        ImageButton btnPrev = (ImageButton)findViewById(R.id.btn_prev);
-        ImageButton btnNext = (ImageButton)findViewById(R.id.btn_next);
-        if (app.getPosition() <= 0) {
-            btnPrev.setEnabled(false);
-        } else if (app.getPosition() >= app.getSize() - 1) {
-            btnNext.setEnabled(false);
+        updateNavigationButtonState();
+    }
+
+    private void updateNavigationButtonState() {
+        updateButtonState(btnPrev, btnNext, app.getPosition(), 0, app.getSize() - 1);
+    }
+
+    private void updateButtonState(ImageButton btnLeft, ImageButton btnRight,
+            int current_value, int min_value, int max_value) {
+        if (current_value <= min_value) {
+            btnLeft.setEnabled(false);
+        } else if (current_value >= max_value) {
+            btnRight.setEnabled(false);
         } else {
-            btnPrev.setEnabled(true);
-            btnNext.setEnabled(true);
+            btnLeft.setEnabled(true);
+            btnRight.setEnabled(true);
         }
     }
 
@@ -99,13 +118,35 @@ public class TxtViewer extends Activity {
     }
 
     private void zoomIn() {
-        float size = text.getTextSize();
-        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, size + 0.1f * size);
+        if (zoom >= MAX_ZOOM) {
+            return;
+        }
+        zoom++;
+        updateZoomButtonState();
+
+        float size = textView.getTextSize();
+
+        Log.d(TAG, "Font size before zoom in: " + size);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size + 0.1f * size);
+        Log.d(TAG, "Font size after zoom in: " + textView.getTextSize());
     }
 
     private void zoomOut() {
-        float size = text.getTextSize();
-        text.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 0.1f * size);
+        if (zoom <= MIN_ZOOM) {
+            return;
+        }
+        zoom--;
+        updateZoomButtonState();
+
+        float size = textView.getTextSize();
+
+        Log.d(TAG, "Font size before zoom out: " + size);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 0.1f * size);
+        Log.d(TAG, "Font size after zoom out: " + textView.getTextSize());
+    }
+
+    private void updateZoomButtonState() {
+        updateButtonState(btnZoomOut, btnZoomIn, zoom, MIN_ZOOM, MAX_ZOOM);
     }
 
     private String readText(String file) {

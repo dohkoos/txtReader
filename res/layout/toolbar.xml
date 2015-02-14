@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@drawable/toolbar_bg">
 
     <ImageButton
@@ -24,15 +24,15 @@
         android:contentDescription="@null"
         style="@style/toolbar" />
     <ImageButton
-        android:id="@+id/btn_zoomin"
-        android:src="@drawable/zoomin"
-        android:text="@string/zoomin"
+        android:id="@+id/btn_zoomout"
+        android:src="@drawable/btn_zoomout_bg"
+        android:text="@string/zoomout"
         android:contentDescription="@null"
         style="@style/toolbar" />
     <ImageButton
-        android:id="@+id/btn_zoomout"
-        android:src="@drawable/zoomout"
-        android:text="@string/zoomout"
+        android:id="@+id/btn_zoomin"
+        android:src="@drawable/btn_zoomin_bg"
+        android:text="@string/zoomin"
         android:contentDescription="@null"
         style="@style/toolbar" />
 </LinearLayout>

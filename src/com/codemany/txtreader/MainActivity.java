@@ -41,8 +41,8 @@ public class MainActivity extends Activity {
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                app.setPosition(position);
-                startActivity(new Intent(MainActivity.this, TxtViewer.class));
+                app.setIndex(position);
+                startActivity(new Intent(MainActivity.this, TxtViewerActivity.class));
             }
         });
     }

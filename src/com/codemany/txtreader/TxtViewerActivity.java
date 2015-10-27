@@ -13,16 +13,16 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class TxtViewer extends Activity {
-    private static final String TAG = "TxtViewer";
+public class TxtViewerActivity extends Activity {
+    private static final String TAG = "TxtViewerActivity";
 
     private static final int MIN_ZOOM = -3;
     private static final int MAX_ZOOM = 6;
     private int zoom = 0;
 
     private MainApp app;
-    private TextView textView;
 
+    private TextView textView;
     private ImageButton btnToc;
     private ImageButton btnPrev;
     private ImageButton btnNext;
@@ -84,7 +84,7 @@ public class TxtViewer extends Activity {
     }
 
     private void updateNavigationButtonState() {
-        updateButtonState(btnPrev, btnNext, app.getPosition(), 0, app.getSize() - 1);
+        updateButtonState(btnPrev, btnNext, app.getIndex(), 0, app.getSize() - 1);
     }
 
     private void updateButtonState(ImageButton btnLeft, ImageButton btnRight,
@@ -104,15 +104,15 @@ public class TxtViewer extends Activity {
     }
 
     private void gotoPrev() {
-        if (app.getPosition() > 0) {
-            app.setPosition(app.getPosition() - 1);
+        if (app.getIndex() > 0) {
+            app.setIndex(app.getIndex() - 1);
         }
         updateTxtViewer();
     }
 
     private void gotoNext() {
-        if (app.getPosition() < app.getSize() - 1) {
-            app.setPosition(app.getPosition() + 1);
+        if (app.getIndex() < app.getSize() - 1) {
+            app.setIndex(app.getIndex() + 1);
         }
         updateTxtViewer();
     }

@@ -25,6 +25,6 @@
 
         <activity android:name=".MainActivity" />
 
-        <activity android:name=".TxtViewer" />
+        <activity android:name=".TxtViewerActivity" />
     </application>
 </manifest>

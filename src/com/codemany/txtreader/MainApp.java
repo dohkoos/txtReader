@@ -10,7 +10,7 @@ public class MainApp extends Application {
     public static final String FILE = "file";
 
     private List<Map<String, String>> toc;
-    private int position;
+    private int index;
 
     public void setToc(List<Map<String, String>> toc) {
         this.toc = toc;
@@ -24,19 +24,19 @@ public class MainApp extends Application {
         return toc.size();
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
-    public int getPosition() {
-        return position;
+    public int getIndex() {
+        return index;
     }
 
     public String getTitle() {
-        return toc.get(position).get(TITLE);
+        return toc.get(index).get(TITLE);
     }
 
     public String getFile() {
-        return toc.get(position).get(FILE);
+        return toc.get(index).get(FILE);
     }
 }

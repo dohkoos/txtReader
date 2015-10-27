@@ -1,9 +1,5 @@
 package com.codemany.txtreader;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +16,7 @@ public class TxtViewerActivity extends Activity {
     private static final int MAX_ZOOM = 6;
     private int zoom = 0;
 
-    private MainApp app;
+    private TxtBook txtBook;
 
     private TextView textView;
     private ImageButton btnToc;
@@ -34,7 +30,7 @@ public class TxtViewerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer);
 
-        app = (MainApp)getApplication();
+        txtBook = ((MainApp)getApplication()).getTxtBook();
 
         btnToc = (ImageButton)findViewById(R.id.btn_toc);
         btnToc.setOnClickListener(new OnClickListener() {
@@ -77,14 +73,14 @@ public class TxtViewerActivity extends Activity {
     }
 
     private void updateTxtViewer() {
-        setTitle(app.getTitle());
-        textView.setText(readText(app.getFile()));
+        setTitle(txtBook.getTitle());
+        textView.setText(txtBook.getText());
 
         updateNavigationButtonState();
     }
 
     private void updateNavigationButtonState() {
-        updateButtonState(btnPrev, btnNext, app.getIndex(), 0, app.getSize() - 1);
+        updateButtonState(btnPrev, btnNext, txtBook.getIndex(), 0, txtBook.getSize() - 1);
     }
 
     private void updateButtonState(ImageButton btnLeft, ImageButton btnRight,
@@ -104,15 +100,15 @@ public class TxtViewerActivity extends Activity {
     }
 
     private void gotoPrev() {
-        if (app.getIndex() > 0) {
-            app.setIndex(app.getIndex() - 1);
+        if (txtBook.getIndex() > 0) {
+            txtBook.setIndex(txtBook.getIndex() - 1);
         }
         updateTxtViewer();
     }
 
     private void gotoNext() {
-        if (app.getIndex() < app.getSize() - 1) {
-            app.setIndex(app.getIndex() + 1);
+        if (txtBook.getIndex() < txtBook.getSize() - 1) {
+            txtBook.setIndex(txtBook.getIndex() + 1);
         }
         updateTxtViewer();
     }
@@ -147,24 +143,5 @@ public class TxtViewerActivity extends Activity {
 
     private void updateZoomButtonState() {
         updateButtonState(btnZoomOut, btnZoomIn, zoom, MIN_ZOOM, MAX_ZOOM);
-    }
-
-    private String readText(String file) {
-        try {
-            InputStreamReader isr =
-                new InputStreamReader(getAssets().open(file), "utf-8");
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            br.close();
-            isr.close();
-            return sb.toString();
-        } catch (IOException e) {
-            // Should never happen!
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -1,13 +1,5 @@
 package com.codemany.txtreader;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,54 +12,30 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class MainActivity extends Activity {
-    private MainApp app;
+    private TxtBook txtBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        app = (MainApp)getApplication();
-        app.setToc(getTableOfContents());
+        txtBook = ((MainApp)getApplication()).getTxtBook();
 
         ListView lv = (ListView)findViewById(R.id.toc);
         SimpleAdapter adapter = new SimpleAdapter(
                 this,
-                app.getToc(),
+                txtBook.getToc(),
                 R.layout.list_item,
-                new String[] {MainApp.TITLE},
+                new String[] {TxtBook.TITLE},
                 new int[] {R.id.title});
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                app.setIndex(position);
+                txtBook.setIndex(position);
                 startActivity(new Intent(MainActivity.this, TxtViewerActivity.class));
             }
         });
-    }
-
-    private List<Map<String, String>> getTableOfContents() {
-        try {
-            InputStreamReader isr =
-                new InputStreamReader(getAssets().open("toc.txt"), "utf-8");
-            BufferedReader br = new BufferedReader(isr);
-            List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] items = line.split(",");
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(MainApp.TITLE, items[0]);
-                map.put(MainApp.FILE, items[1]);
-                list.add(map);
-            }
-            br.close();
-            isr.close();
-            return list;
-        } catch (IOException e) {
-            // Should never happen!
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
